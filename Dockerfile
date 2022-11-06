@@ -51,26 +51,6 @@ RUN cd opencv-${OPENCV_VERSION} && mkdir build && cd build && \
   -D OpenGL_GL_PREFERENCE=GLVND && \
   ninja && ninja install
 
-# Build Hyperpose
-RUN apt -y --no-install-recommends install libgflags-dev
-
-RUN wget -O hyperpose.zip https://github.com/tensorlayer/hyperpose/archive/refs/heads/master.zip && \
-  unzip hyperpose.zip && mv hyperpose-master hyperpose
-
-RUN cd hyperpose && \
-  sed -i "/TARGET_LINK_LIBRARIES(\${target} stdtracer)/d" cmake/3rdparty.cmake && \
-  mkdir build && cd build && \
-  cmake -GNinja .. \
-  -D CMAKE_BUILD_TYPE=Release \
-  -D WITH_TRACE=OFF \
-  -D BUILD_CLI=ON \
-  -D BUILD_EXAMPLES=OFF \
-  -D BUILD_USER_CODES=OFF \
-  -D BUILD_TESTS=OFF \
-  -D BUILD_LIB=ON \
-  -D BUILD_PACKAGE=ON &&\
-  ninja && ninja install
-
 # Install libtorch
 RUN wget -O libtorch.zip https://download.pytorch.org/libtorch/cu117/libtorch-cxx11-abi-shared-with-deps-1.13.0%2Bcu117.zip && \
   unzip libtorch.zip
