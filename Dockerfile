@@ -27,7 +27,7 @@ RUN wget -O opencv.zip https://github.com/opencv/opencv/archive/refs/tags/${OPEN
 
 RUN cd opencv-${OPENCV_VERSION} && mkdir build && cd build && \
   cmake -GNinja .. \
-  -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-${OPENCV_VERSION}/modules/cudaimgproc\;../../opencv_contrib-${OPENCV_VERSION}/modules/cudev \
+  -D OPENCV_EXTRA_MODULES_PATH=../../opencv_contrib-${OPENCV_VERSION}/modules/cudawarping\;../../opencv_contrib-${OPENCV_VERSION}/modules/cudev \
   -D BUILD_TESTS=OFF \
   -D BUILD_PERF_TESTS=OFF \
   -D BUILD_EXAMPLES=OFF \
