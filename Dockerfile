@@ -2,7 +2,7 @@ FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 # Install build tools
 RUN apt update && apt install -y --no-install-recommends \
-  python3-dev python3-pip python3-numpy \
+  python3-dev python3-pip python3-protobuf python3-numpy python-is-python3 \
   g++ cmake ninja-build pkg-config wget unzip git
 
 # Install TensorRT
