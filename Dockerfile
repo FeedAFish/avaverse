@@ -7,7 +7,9 @@ RUN apt update && apt install -y --no-install-recommends \
 
 # Install TensorRT
 RUN apt install -y --no-install-recommends \
-  tensorrt tensorrt-dev python3-libnvinfer-dev
+  libnvinfer-bin libnvinfer-dev libnvinfer-plugin-dev libnvinfer-plugin8 \
+  libnvinfer8 libnvonnxparsers-dev libnvonnxparsers8 \
+  libnvparsers-dev libnvparsers8 python3-libnvinfer python3-libnvinfer-dev
 
 # Build OpenCV
 RUN apt install -y --no-install-recommends \
