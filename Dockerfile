@@ -4,6 +4,9 @@ FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 RUN apt update && apt install -y python3-dev python3-pip python3-numpy \
   g++ cmake ninja-build pkg-config wget unzip git
 
+# Install TensorRT
+RUN apt -y install tensorrt tensorrt-dev python3-libnvinfer-dev
+
 # Build OpenCV
 RUN apt install -y libpng-dev libjpeg-dev libtiff-dev libwebp-dev libopenjp2-7-dev libopenexr-dev \
   libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
@@ -42,9 +45,6 @@ RUN cd opencv-${OPENCV_VERSION} && mkdir build && cd build && \
   -D WITH_OPENGL=ON \
   -D OpenGL_GL_PREFERENCE=GLVND && \
   ninja && ninja install
-
-# Install TensorRT
-RUN apt -y install tensorrt tensorrt-dev python3-libnvinfer-dev
 
 # Build Hyperpose
 RUN apt -y install libgflags-dev
