@@ -1,5 +1,3 @@
-FROM tensorlayer/hyperpose AS hyperpose
-
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 # Install build tools
@@ -67,8 +65,6 @@ RUN cd hyperpose && \
   -D BUILD_LIB=ON \
   -D BUILD_PACKAGE=ON &&\
   ninja && ninja install
-
-COPY --from=hyperpose /hyperpose/data hyperpose/data/
 
 # Install libtorch
 RUN wget -O libtorch.zip https://download.pytorch.org/libtorch/cu117/libtorch-cxx11-abi-shared-with-deps-1.13.0%2Bcu117.zip && \
