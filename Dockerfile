@@ -46,7 +46,7 @@ RUN cd opencv-${OPENCV_VERSION} && mkdir build && cd build && \
   ninja && ninja install
 
 # Install TensorRT
-RUN apt -y install tensorrt
+RUN apt -y install tensorrt tensorrt-dev python3-libnvinfer-dev
 
 # Build Hyperpose
 RUN apt -y install libgflags-dev
