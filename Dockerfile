@@ -1,14 +1,17 @@
 FROM nvidia/cuda:11.8.0-cudnn8-devel-ubuntu22.04
 
 # Install build tools
-RUN apt update && apt install -y python3-dev python3-pip python3-numpy \
+RUN apt update && apt install -y --no-install-recommends \
+  python3-dev python3-pip python3-numpy \
   g++ cmake ninja-build pkg-config wget unzip git
 
 # Install TensorRT
-RUN apt -y install tensorrt tensorrt-dev python3-libnvinfer-dev
+RUN apt install -y --no-install-recommends \
+  tensorrt tensorrt-dev python3-libnvinfer-dev
 
 # Build OpenCV
-RUN apt install -y libpng-dev libjpeg-dev libtiff-dev libwebp-dev libopenjp2-7-dev libopenexr-dev \
+RUN apt install -y --no-install-recommends \
+  libpng-dev libjpeg-dev libtiff-dev libwebp-dev libopenjp2-7-dev libopenexr-dev \
   libavcodec-dev libavformat-dev libavutil-dev libswscale-dev libswresample-dev \
   libtbb-dev \
   libgtk2.0-dev libgtkglext1-dev libglx-dev libcanberra-gtk-module
@@ -47,7 +50,7 @@ RUN cd opencv-${OPENCV_VERSION} && mkdir build && cd build && \
   ninja && ninja install
 
 # Build Hyperpose
-RUN apt -y install libgflags-dev
+RUN apt -y --no-install-recommends install libgflags-dev
 
 RUN wget -O hyperpose.zip https://github.com/tensorlayer/hyperpose/archive/refs/heads/master.zip && \
   unzip hyperpose.zip && mv hyperpose-master hyperpose
