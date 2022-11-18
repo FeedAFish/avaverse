@@ -11,6 +11,9 @@ RUN apt install -y --no-install-recommends \
   libnvinfer8 libnvonnxparsers-dev libnvonnxparsers8 \
   libnvparsers-dev libnvparsers8 python3-libnvinfer python3-libnvinfer-dev
 
+# Install Eigen
+RUN apt install -y --no-install-recommends libeigen3-dev
+
 # Build OpenCV
 RUN apt install -y --no-install-recommends \
   libpng-dev libjpeg-dev libtiff-dev libwebp-dev libopenjp2-7-dev libopenexr-dev \
@@ -48,5 +51,6 @@ RUN cd opencv-${OPENCV_VERSION} && mkdir build && cd build && \
   -D WITH_GTK_2_X=ON \
   -D WITH_QT=OFF \
   -D WITH_OPENGL=ON \
-  -D OpenGL_GL_PREFERENCE=GLVND && \
+  -D OpenGL_GL_PREFERENCE=GLVND \
+  -D WITH_EIGEN=ON && \
   ninja && ninja install
