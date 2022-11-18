@@ -54,3 +54,13 @@ RUN cd opencv-${OPENCV_VERSION} && mkdir build && cd build && \
   -D OpenGL_GL_PREFERENCE=GLVND \
   -D WITH_EIGEN=ON && \
   ninja && ninja install
+
+# Install Embree
+ARG EMBREE_VERSION="3.13.5"
+
+RUN wget -O embree.zip https://github.com/embree/embree/releases/download/v3.13.5/embree-${EMBREE_VERSION}.x86_64.linux.tar.gz && \
+  tar xzf embree.zip
+ENV EMBREE_PATH=/embree-${EMBREE_VERSION}.x86_64.linux
+ENV CPATH=$EMBREE_PATH/include:$CPATH
+ENV LIBRARY_PATH=$EMBREE_PATH/lib:$LIBRARY_PATH
+ENV LD_LIBRARY_PATH=$EMBREE_PATH/lib:$LD_LIBRARY_PATH
