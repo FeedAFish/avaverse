@@ -50,7 +50,3 @@ RUN cd opencv-${OPENCV_VERSION} && mkdir build && cd build && \
   -D WITH_OPENGL=ON \
   -D OpenGL_GL_PREFERENCE=GLVND && \
   ninja && ninja install
-
-# Install libtorch
-RUN wget -O libtorch.zip https://download.pytorch.org/libtorch/cu117/libtorch-cxx11-abi-shared-with-deps-1.13.0%2Bcu117.zip && \
-  unzip libtorch.zip
