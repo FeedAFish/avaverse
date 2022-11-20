@@ -63,3 +63,6 @@ if("${LIBIGL_WITH_GLFW}")
   add_library(glfw::glfw ALIAS glfw)
   igl_include(glfw)
 endif()
+
+# Build tools
+add_subdirectory(tools)
