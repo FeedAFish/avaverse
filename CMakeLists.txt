@@ -48,17 +48,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_ROOT_DIR}/bin/${CMAKE_BUILD_TYPE}"
 # Eigen
 find_package(Eigen3 CONFIG REQUIRED)
 
-# Embree
-find_package(embree REQUIRED)
-add_library(embree::embree ALIAS embree)
-
 # Glfw
 find_package(glfw3 REQUIRED)
 add_library(glfw::glfw ALIAS glfw)
 
 # Libigl
 include(external/libigl)
-igl_include(embree)
 igl_include(png)
 igl_include(glfw)
 
