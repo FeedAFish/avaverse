@@ -55,7 +55,7 @@ add_library(embree::embree ALIAS embree)
 # Libigl
 option(LIBIGL_WITH_GLFW "Build with glfw" OFF)
 
-include(libigl)
+include(external/libigl)
 igl_include(embree)
 igl_include(png)
 
