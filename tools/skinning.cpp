@@ -9,6 +9,9 @@
 #include <cxxopts.hpp>
 #include <iostream>
 
+using ColorChannel =
+    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic>;
+
 int main(int argc, char* argv[]) {
   cxxopts::Options options("skinning", "Skinning on deformed mesh");
   auto options_adder = options.add_options();
@@ -31,10 +34,10 @@ int main(int argc, char* argv[]) {
   Eigen::MatrixXi F, E;
   igl::readPLY(args["mesh"].as<std::string>(), V, F, E, N, UV);
 
-  Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> R;
-  Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> G;
-  Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> B;
-  Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> A;
+  ColorChannel R;
+  ColorChannel G;
+  ColorChannel B;
+  ColorChannel A;
   igl::png::readPNG(args["texture"].as<std::string>(), R, G, B, A);
 
   igl::opengl::glfw::Viewer viewer;
@@ -64,14 +67,10 @@ int main(int argc, char* argv[]) {
   } else {
     int width = 1034;
     int height = 1024;
-    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> Ro(width,
-                                                                    height);
-    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> Go(width,
-                                                                    height);
-    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> Bo(width,
-                                                                    height);
-    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> Ao(width,
-                                                                    height);
+    ColorChannel Ro(width, height);
+    ColorChannel Go(width, height);
+    ColorChannel Bo(width, height);
+    ColorChannel Ao(width, height);
 
     viewer.launch_init(false, false, "", width, height, true);
     viewer.core().draw_buffer(viewer.data(), true, Ro, Go, Bo, Ao);
