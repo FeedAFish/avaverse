@@ -57,6 +57,7 @@ option(LIBIGL_WITH_GLFW "Build with glfw" OFF)
 
 include(libigl)
 igl_include(embree)
+igl_include(png)
 
 if("${LIBIGL_WITH_GLFW}")
   find_package(glfw3 REQUIRED)
