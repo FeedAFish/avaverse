@@ -52,18 +52,15 @@ find_package(Eigen3 CONFIG REQUIRED)
 find_package(embree REQUIRED)
 add_library(embree::embree ALIAS embree)
 
-# Libigl
-option(LIBIGL_WITH_GLFW "Build with glfw" OFF)
+# Glfw
+find_package(glfw3 REQUIRED)
+add_library(glfw::glfw ALIAS glfw)
 
+# Libigl
 include(external/libigl)
 igl_include(embree)
 igl_include(png)
-
-if("${LIBIGL_WITH_GLFW}")
-  find_package(glfw3 REQUIRED)
-  add_library(glfw::glfw ALIAS glfw)
-  igl_include(glfw)
-endif()
+igl_include(glfw)
 
 # Cxxopts
 include(external/cxxopts)
