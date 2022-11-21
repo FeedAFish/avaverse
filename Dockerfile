@@ -64,3 +64,6 @@ ENV EMBREE_PATH=/embree-${EMBREE_VERSION}.x86_64.linux
 ENV CPATH=$EMBREE_PATH/include:$CPATH
 ENV LIBRARY_PATH=$EMBREE_PATH/lib:$LIBRARY_PATH
 ENV LD_LIBRARY_PATH=$EMBREE_PATH/lib:$LD_LIBRARY_PATH
+
+# Install Glfw
+RUN apt install -y --no-install-recommends libglfw3-dev libglm-dev
