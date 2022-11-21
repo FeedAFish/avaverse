@@ -12,6 +12,12 @@
 using ColorChannel =
     Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic>;
 
+void compute_angle_of_skeleton(const Eigen::MatrixXd& skeleton,
+                               Eigen::MatrixXd& angles) {
+  angles = skeleton;
+  angles = angles.rowwise().normalized().array().acos().matrix();
+}
+
 int main(int argc, char* argv[]) {
   cxxopts::Options options("skinning", "Skinning on deformed mesh");
   auto options_adder = options.add_options();
