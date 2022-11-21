@@ -17,10 +17,10 @@ ms = pymeshlab.MeshSet()
 ms.load_new_mesh("model.obj")
 ms.apply_filter("compute_texcoord_transfer_wedge_to_vertex")
 ms.apply_filter("compute_matrix_from_rotation", angle=90)
-ms.apply_filter("transfer_texture_to_color_per_vertex")
 ms.save_current_mesh(
     "model.ply",
     binary=False,
+    save_vertex_color=False,
     save_vertex_normal=True,
     save_textures=False,
     save_face_color=False,
