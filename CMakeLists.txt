@@ -65,5 +65,8 @@ if("${LIBIGL_WITH_GLFW}")
   igl_include(glfw)
 endif()
 
+# Cxxopts
+include(external/cxxopts)
+
 # Build tools
 add_subdirectory(tools)
