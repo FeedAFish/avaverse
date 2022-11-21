@@ -1,6 +1,7 @@
 #include <igl/directed_edge_parents.h>
 #include <igl/opengl/glfw/Viewer.h>
 #include <igl/png/readPNG.h>
+#include <igl/png/writePNG.h>
 #include <igl/readPLY.h>
 #include <igl/readTGF.h>
 
@@ -16,6 +17,8 @@ int main(int argc, char* argv[]) {
   options_adder("t,texture", "Texture path (.png)",
                 cxxopts::value<std::string>());
   options_adder("s,skeleton", "Skeleton path (.tgf)",
+                cxxopts::value<std::string>());
+  options_adder("o,output", "Output as an image (.png)",
                 cxxopts::value<std::string>());
   auto args = options.parse(argc, argv);
 
@@ -34,23 +37,47 @@ int main(int argc, char* argv[]) {
   Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> A;
   igl::png::readPNG(args["texture"].as<std::string>(), R, G, B, A);
 
-  Eigen::MatrixXd C;
-  Eigen::MatrixXi BE;
-  igl::readTGF(args["skeleton"].as<std::string>(), C, BE);
-
-  Eigen::VectorXi P;
-  igl::directed_edge_parents(BE, P);
-
-  const Eigen::RowVector3d edge_color(70. / 255., 252. / 255., 167. / 255.);
-
   igl::opengl::glfw::Viewer viewer;
   viewer.data().set_mesh(V, F);
   viewer.data().set_normals(N);
   viewer.data().set_uv(UV);
   viewer.data().show_texture = true;
+  viewer.data().show_lines = false;
   viewer.data().set_texture(R, G, B, A);
-  viewer.data().set_edges(C, BE, edge_color);
-  viewer.launch();
+  // rotate z 90deg and then y 180deg
+  viewer.core().trackball_angle =
+      Eigen::Quaternionf(-sqrt(0.5), sqrt(0.5), 0, 0);
+
+  if (!args.count("output")) {
+    if (args.count("skeleton")) {
+      Eigen::MatrixXd C;
+      Eigen::MatrixXi BE;
+      igl::readTGF(args["skeleton"].as<std::string>(), C, BE);
+
+      Eigen::VectorXi P;
+      igl::directed_edge_parents(BE, P);
+
+      const Eigen::RowVector3d edge_color(70. / 255., 252. / 255., 167. / 255.);
+      viewer.data().set_edges(C, BE, edge_color);
+    }
+    viewer.launch();
+  } else {
+    int width = 1034;
+    int height = 1024;
+    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> Ro(width,
+                                                                    height);
+    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> Go(width,
+                                                                    height);
+    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> Bo(width,
+                                                                    height);
+    Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic> Ao(width,
+                                                                    height);
+
+    viewer.launch_init(false, false, "", width, height, true);
+    viewer.core().draw_buffer(viewer.data(), true, Ro, Go, Bo, Ao);
+    igl::png::writePNG(Ro, Go, Bo, Ao, args["output"].as<std::string>());
+    viewer.launch_shut();
+  }
 
   return 0;
 }
