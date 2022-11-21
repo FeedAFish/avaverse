@@ -51,18 +51,16 @@ int main(int argc, char* argv[]) {
   viewer.core().trackball_angle =
       Eigen::Quaternionf(-sqrt(0.5), sqrt(0.5), 0, 0);
 
+  Eigen::MatrixXd C;
+  Eigen::MatrixXi BE;
+  igl::readTGF(args["skeleton"].as<std::string>(), C, BE);
+
+  Eigen::VectorXi P;
+  igl::directed_edge_parents(BE, P);
+
   if (!args.count("output")) {
-    if (args.count("skeleton")) {
-      Eigen::MatrixXd C;
-      Eigen::MatrixXi BE;
-      igl::readTGF(args["skeleton"].as<std::string>(), C, BE);
-
-      Eigen::VectorXi P;
-      igl::directed_edge_parents(BE, P);
-
-      const Eigen::RowVector3d edge_color(70. / 255., 252. / 255., 167. / 255.);
-      viewer.data().set_edges(C, BE, edge_color);
-    }
+    const Eigen::RowVector3d edge_color(70. / 255., 252. / 255., 167. / 255.);
+    viewer.data().set_edges(C, BE, edge_color);
     viewer.launch();
   } else {
     int width = 1034;
