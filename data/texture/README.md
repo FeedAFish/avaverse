@@ -16,6 +16,7 @@ import pymeshlab
 ms = pymeshlab.MeshSet()
 ms.load_new_mesh("model.obj")
 ms.apply_filter("compute_texcoord_transfer_wedge_to_vertex")
+ms.apply_filter("compute_matrix_from_rotation", angle=90)
 ms.save_current_mesh(
     "model.ply",
     binary=False,
