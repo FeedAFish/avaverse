@@ -21,7 +21,7 @@ int main(int argc, char* argv[]) {
 
   if (args.count("help")) {
     std::cout << options.help() << std::endl;
-    return EXIT_SUCCESS;
+    return 0;
   }
 
   Eigen::MatrixXd V, N, UV;
@@ -52,5 +52,5 @@ int main(int argc, char* argv[]) {
   viewer.data().set_edges(C, BE, edge_color);
   viewer.launch();
 
-  return EXIT_SUCCESS;
+  return 0;
 }
