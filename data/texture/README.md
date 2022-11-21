@@ -23,6 +23,7 @@ ms.save_current_mesh(
     binary=False,
     save_vertex_normal=True,
     save_textures=False,
+    save_face_color=False,
     save_wedge_texcoord=False,
 )
 ```
