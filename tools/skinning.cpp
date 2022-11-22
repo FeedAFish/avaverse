@@ -1,18 +1,18 @@
-#include <igl/directed_edge_parents.h>
-#include <igl/lbs_matrix.h>
-#include <igl/opengl/glfw/Viewer.h>
-#include <igl/png/readPNG.h>
-#include <igl/png/writePNG.h>
-#include <igl/readDMAT.h>
-#include <igl/readPLY.h>
-#include <igl/readTGF.h>
-
-#include <Eigen/Geometry>
 #include <algorithm>
-#include <cxxopts.hpp>
 #include <iostream>
 #include <numbers>
-#include <unsupported/Eigen/EulerAngles>
+
+#include "Eigen/Geometry"
+#include "cxxopts.hpp"
+#include "igl/directed_edge_parents.h"
+#include "igl/lbs_matrix.h"
+#include "igl/opengl/glfw/Viewer.h"
+#include "igl/png/readPNG.h"
+#include "igl/png/writePNG.h"
+#include "igl/readDMAT.h"
+#include "igl/readPLY.h"
+#include "igl/readTGF.h"
+#include "unsupported/Eigen/EulerAngles"
 
 using ColorChannel =
     Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic>;
