@@ -1,18 +1,18 @@
 # Blender 3.3.1 MTL File: 'None'
 # www.blender.org
 
-newmtl Cigar_Mat
+newmtl Cigar_Mat.003
 Ns 123.076927
 Ka 1.000000 1.000000 1.000000
 Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
-illum 3
+illum 1
 map_Kd Boss_diffuse.png
 map_Ks Boss_specular.png
 map_Bump -bm 1.000000 Boss_normal.png
 
-newmtl Clothes_MAT
+newmtl Clothes_MAT.006
 Ns 369.230743
 Ka 1.000000 1.000000 1.000000
 Ke 0.000000 0.000000 0.000000
@@ -23,7 +23,7 @@ map_Kd Boss_diffuse.png
 map_Ks Boss_specular.png
 map_Bump -bm 1.000000 Boss_normal.png
 
-newmtl Clothes_MAT.001
+newmtl Clothes_MAT.007
 Ns 369.230743
 Ka 1.000000 1.000000 1.000000
 Ke 0.000000 0.000000 0.000000
@@ -34,7 +34,7 @@ map_Kd Boss_diffuse.png
 map_Ks Boss_specular.png
 map_Bump -bm 1.000000 Boss_normal.png
 
-newmtl Eyes_MAT
+newmtl Eyes_MAT.006
 Ns 938.461548
 Ka 1.000000 1.000000 1.000000
 Ke 0.000000 0.000000 0.000000
@@ -45,7 +45,7 @@ map_Kd Boss_diffuse.png
 map_Ks Boss_specular.png
 map_Bump -bm 1.000000 Boss_normal.png
 
-newmtl Eyes_MAT.001
+newmtl Eyes_MAT.007
 Ns 938.461548
 Ka 1.000000 1.000000 1.000000
 Ke 0.000000 0.000000 0.000000
@@ -56,7 +56,7 @@ map_Kd Boss_diffuse.png
 map_Ks Boss_specular.png
 map_Bump -bm 1.000000 Boss_normal.png
 
-newmtl Skin_MAT
+newmtl Skin_MAT.003
 Ns 138.461548
 Ka 1.000000 1.000000 1.000000
 Ke 0.000000 0.000000 0.000000

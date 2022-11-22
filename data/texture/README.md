@@ -8,6 +8,8 @@
   - Materials.
   - Triangulated Mesh
 - Extract all texture files inside menu `UV Editing` of `Blender` (Image -> Save as).
+- Re-import the `obj` file into `Blender` and follow this [tutorial](https://github.com/rlguy/Blender-FLIP-Fluids/wiki/Manifold-Meshes#addon-3d-print-toolbox) to make manifold.
+- Re-export `obj` with the same option as above.
 - Run the following code
 
 ```python
