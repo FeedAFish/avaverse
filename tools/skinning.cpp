@@ -156,17 +156,6 @@ int main(int argc, char* argv[]) {
   ColorChannel A;
   igl::png::readPNG(args["texture"].as<std::string>(), R, G, B, A);
 
-  igl::opengl::glfw::Viewer viewer;
-  viewer.data().set_mesh(V, F);
-  viewer.data().set_normals(N);
-  viewer.data().set_uv(UV);
-  viewer.data().show_texture = true;
-  viewer.data().show_lines = false;
-  viewer.data().set_texture(R, G, B, A);
-  // rotate z 90deg and then y 180deg
-  viewer.core().trackball_angle =
-      Eigen::Quaternionf(-sqrt(0.5), sqrt(0.5), 0, 0);
-
   Eigen::MatrixXd C;
   Eigen::MatrixXi BE;
   igl::readTGF(args["skeleton"].as<std::string>(), C, BE);
@@ -189,6 +178,18 @@ int main(int argc, char* argv[]) {
   Eigen::MatrixXd T;
   compute_transformation_matrix(C, CD, T);
   Eigen::MatrixXd U = M * T;
+
+  igl::opengl::glfw::Viewer viewer;
+  viewer.data().set_mesh(V, F);
+  viewer.data().set_normals(N);
+  viewer.data().set_uv(UV);
+  viewer.data().show_texture = true;
+  viewer.data().show_lines = false;
+  viewer.data().set_texture(R, G, B, A);
+  // rotate z 90deg and then y 180deg
+  viewer.core().trackball_angle =
+      Eigen::Quaternionf(-sqrt(0.5), sqrt(0.5), 0, 0);
+
   viewer.data().set_vertices(U);
   viewer.data().compute_normals();
 
