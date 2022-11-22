@@ -52,10 +52,15 @@ find_package(Eigen3 CONFIG REQUIRED)
 find_package(glfw3 REQUIRED)
 add_library(glfw::glfw ALIAS glfw)
 
+# CGAL
+find_package(CGAL REQUIRED Core)
+
 # Libigl
 include(external/libigl)
 igl_include(png)
 igl_include(glfw)
+igl_include(copyleft/cgal)
+igl_include(copyleft/tetgen)
 
 # Cxxopts
 include(external/cxxopts)
