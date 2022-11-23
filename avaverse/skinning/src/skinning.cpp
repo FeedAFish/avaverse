@@ -40,9 +40,10 @@ Skinning Skinning::from_igl_path(const fs::path& mesh_path,
   Eigen::MatrixXd UV;
   Eigen::MatrixXi F;
   {
-    Eigen::MatrixXd _1;
+    Eigen::MatrixXd _1, _3, _5, _7;
     Eigen::MatrixXi _2;
-    igl::readPLY(mesh_path, V, F, _2, _1, UV);
+    std::vector<std::string> _4, _6, _8, _9;
+    igl::readPLY(mesh_path, V, F, _2, _1, UV, _3, _4, _5, _6, _7, _8, _9);
   }
 
   ColorChannel R;

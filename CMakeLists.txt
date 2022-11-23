@@ -56,6 +56,7 @@ add_library(glfw::glfw ALIAS glfw)
 find_package(CGAL REQUIRED Core)
 
 # Libigl
+option(LIBIGL_USE_STATIC_LIBRARY "Use libIGL as static librarie" ON)
 include(external/libigl)
 igl_include(png)
 igl_include(glfw)
