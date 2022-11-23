@@ -44,6 +44,14 @@ class Skinning {
   void deform(const fs::path& deform_skeleton_path);
   void deform(const Skeleton& CD);
 
+  void add_edges(const Eigen::MatrixXd& V, const Eigen::MatrixXi& E, int r,
+                 int g, int b);
+  void add_edges(const Eigen::MatrixXd& V, const Eigen::MatrixXi& E,
+                 const Eigen::RowVector3d& color);
+
+  void show_skeleton(int r, int g, int b);
+  void show_skeleton(const Eigen::RowVector3d& color);
+
   const Eigen::MatrixXd V;
   const Eigen::MatrixXi F;
   const Eigen::MatrixXd UV;

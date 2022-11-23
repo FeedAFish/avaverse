@@ -6,6 +6,7 @@
 #include "Eigen/Geometry"
 #include "avaverse/config.hpp"
 #include "avaverse/type.hpp"
+#include "igl/deform_skeleton.h"
 #include "igl/lbs_matrix.h"
 #include "igl/png/readPNG.h"
 #include "igl/readDMAT.h"
@@ -113,6 +114,38 @@ void Skinning::deform(const Skeleton& CD) {
   }
   Eigen::MatrixXd U = M * T_;
   viewer_.data().set_vertices(U);
+}
+
+void Skinning::add_edges(const Eigen::MatrixXd& V, const Eigen::MatrixXi& E,
+                         int r, int g, int b) {
+  const Eigen::RowVector3d color = Eigen::RowVector3d(r, g, b) / 255;
+  add_edges(V, E, color);
+}
+
+void Skinning::add_edges(const Eigen::MatrixXd& V, const Eigen::MatrixXi& E,
+                         const Eigen::RowVector3d& color) {
+  Eigen::MatrixXd P1(E.rows(), V.cols());
+  Eigen::MatrixXd P2(E.rows(), V.cols());
+
+  for (int i = 0; i < E.rows(); ++i) {
+    P1.row(i) = V.row(E(i, 0));
+    P2.row(i) = V.row(E(i, 1));
+  }
+
+  viewer_.data().add_edges(P1, P2, color);
+}
+
+void Skinning::show_skeleton(int r, int g, int b) {
+  const Eigen::RowVector3d color = Eigen::RowVector3d(r, g, b) / 255;
+  show_skeleton(color);
+}
+
+void Skinning::show_skeleton(const Eigen::RowVector3d& color) {
+  Eigen::MatrixXd CT;
+  Eigen::MatrixXi BET;
+  igl::deform_skeleton(C, BE, T_, CT, BET);
+
+  add_edges(CT, BET, color);
 }
 
 void Skinning::check_skeleton_structure(const Eigen::MatrixXd& C,
