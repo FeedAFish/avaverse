@@ -47,7 +47,7 @@ bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 
   {
     Eigen::MatrixXi _1;
-    if (igl::copyleft::tetgen::tetrahedralize(CV, CF, "", TV, TT, _1)) {
+    if (igl::copyleft::tetgen::tetrahedralize(CV, CF, "cYpC", TV, TT, _1)) {
       return false;
     }
   }
