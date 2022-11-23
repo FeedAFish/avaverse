@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <filesystem>
 #include <iostream>
 
 #include "Eigen/Core"
@@ -19,6 +20,8 @@
 #include "igl/writeDMAT.h"
 
 // https://github.com/libigl/libigl-examples/blob/master/skeleton-poser/example.cpp
+
+namespace fs = std::filesystem;
 
 bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
                 double thresh, Eigen::MatrixXd& CV, Eigen::MatrixXi& CF) {
@@ -108,17 +111,16 @@ int main(int argc, char* argv[]) {
   cxxopts::Options options("mesh2bbw", "Compute bbw from given mesh");
   auto options_adder = options.add_options();
   options_adder("help", "Print help");
-  options_adder("m,mesh", "Mesh path", cxxopts::value<std::string>());
+  options_adder("m,mesh", "Mesh path", cxxopts::value<fs::path>());
   options_adder("s,skeleton", "Skeleton path (.tgf)",
-                cxxopts::value<std::string>());
+                cxxopts::value<fs::path>());
   options_adder("t,thresh", "Thresh for clean_mesh",
                 cxxopts::value<double>()->default_value("0.5"));
   options_adder("b,sample_per_bone", "Sample per bone for compute_tet_mesh",
                 cxxopts::value<int>()->default_value("10"));
   options_adder("i,max_iter", "Max iteration for compute_bbw",
                 cxxopts::value<int>()->default_value("1000"));
-  options_adder("o,output", "Output path (.dmat)",
-                cxxopts::value<std::string>());
+  options_adder("o,output", "Output path (.dmat)", cxxopts::value<fs::path>());
   auto args = options.parse(argc, argv);
 
   if (args.count("help")) {
@@ -128,11 +130,11 @@ int main(int argc, char* argv[]) {
 
   Eigen::MatrixXd V;
   Eigen::MatrixXi F;
-  igl::read_triangle_mesh(args["mesh"].as<std::string>(), V, F);
+  igl::read_triangle_mesh(args["mesh"].as<fs::path>(), V, F);
 
   Eigen::MatrixXd C;
   Eigen::MatrixXi BE;
-  igl::readTGF(args["skeleton"].as<std::string>(), C, BE);
+  igl::readTGF(args["skeleton"].as<fs::path>(), C, BE);
 
   Eigen::MatrixXd CV;
   Eigen::MatrixXi CF;
@@ -152,6 +154,6 @@ int main(int argc, char* argv[]) {
     return 1;
   };
 
-  igl::writeDMAT(args["output"].as<std::string>(), W);
+  igl::writeDMAT(args["output"].as<fs::path>(), W);
   return 0;
 }
