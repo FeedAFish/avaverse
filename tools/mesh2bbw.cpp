@@ -18,6 +18,7 @@
 #include "igl/volume.h"
 #include "igl/winding_number.h"
 #include "igl/writeDMAT.h"
+#include "igl/writeMESH.h"
 
 // https://github.com/libigl/libigl-examples/blob/master/skeleton-poser/example.cpp
 
@@ -78,12 +79,9 @@ bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 bool compute_tet_mesh(const Eigen::MatrixXd& CV, const Eigen::MatrixXi& CF,
                       const Eigen::MatrixXd& C, const Eigen::MatrixXi& BE,
                       int samples_per_bone, Eigen::MatrixXd& TV,
-                      Eigen::MatrixXi& TT) {
-  {
-    Eigen::MatrixXi _1;
-    return igl::copyleft::tetgen::mesh_with_skeleton(
-        CV, CF, C, {}, BE, {}, samples_per_bone, "", TV, TT, _1);
-  }
+                      Eigen::MatrixXi& TT, Eigen::MatrixXi& TF) {
+  return igl::copyleft::tetgen::mesh_with_skeleton(
+      CV, CF, C, {}, BE, {}, samples_per_bone, "", TV, TT, TF);
 }
 
 bool compute_bbw(const Eigen::MatrixXd& V, const Eigen::MatrixXd& TV,
@@ -144,8 +142,9 @@ int main(int argc, char* argv[]) {
 
   Eigen::MatrixXd TV;
   Eigen::MatrixXi TT;
+  Eigen::MatrixXi TF;
   if (!compute_tet_mesh(CV, CF, C, BE, args["sample_per_bone"].as<int>(), TV,
-                        TT)) {
+                        TT, TF)) {
     return 1;
   };
 
@@ -154,6 +153,8 @@ int main(int argc, char* argv[]) {
     return 1;
   };
 
-  igl::writeDMAT(args["output"].as<fs::path>(), W);
+  auto output = args["output"].as<fs::path>();
+  igl::writeMESH(output.replace_extension("mesh"), TV, TT, TF);
+  igl::writeDMAT(output.replace_extension("dmat"), W);
   return 0;
 }
