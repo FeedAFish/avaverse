@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
+#include <string>
 
 #include "Eigen/Core"
 #include "cxxopts.hpp"
@@ -80,10 +81,11 @@ bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 
 bool compute_tet_mesh(const Eigen::MatrixXd& CV, const Eigen::MatrixXi& CF,
                       const Eigen::MatrixXd& C, const Eigen::MatrixXi& BE,
-                      int samples_per_bone, Eigen::MatrixXd& TV,
-                      Eigen::MatrixXi& TT, Eigen::MatrixXi& TF) {
+                      int samples_per_bone, const std::string& quality,
+                      Eigen::MatrixXd& TV, Eigen::MatrixXi& TT,
+                      Eigen::MatrixXi& TF) {
   return igl::copyleft::tetgen::mesh_with_skeleton(
-      CV, CF, C, {}, BE, {}, samples_per_bone, "", TV, TT, TF);
+      CV, CF, C, {}, BE, {}, samples_per_bone, quality, TV, TT, TF);
 }
 
 bool compute_bbw(const Eigen::MatrixXd& V, const Eigen::MatrixXd& TV,
@@ -117,6 +119,8 @@ int main(int argc, char* argv[]) {
   options_adder("t,thresh", "Thresh for clean_mesh",
                 cxxopts::value<double>()->default_value("0.5"));
   options_adder("f,full", "Run full tetrahedralize on clean_mesh");
+  options_adder("q,quality", "Quality option for tetgen",
+                cxxopts::value<std::string>()->default_value(""));
   options_adder("b,sample_per_bone", "Sample per bone for compute_tet_mesh",
                 cxxopts::value<int>()->default_value("10"));
   options_adder("i,max_iter", "Max iteration for compute_bbw",
@@ -147,8 +151,8 @@ int main(int argc, char* argv[]) {
   Eigen::MatrixXd TV;
   Eigen::MatrixXi TT;
   Eigen::MatrixXi TF;
-  if (!compute_tet_mesh(CV, CF, C, BE, args["sample_per_bone"].as<int>(), TV,
-                        TT, TF)) {
+  if (!compute_tet_mesh(CV, CF, C, BE, args["sample_per_bone"].as<int>(),
+                        args["quality"].as<std::string>(), TV, TT, TF)) {
     return 1;
   };
 
