@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Eigen/Core"
-#include "common/config.hpp"
+#include "avaverse/config.hpp"
 
 namespace avaverse {
 

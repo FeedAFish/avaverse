@@ -1,11 +1,11 @@
-#include "skinning/skinning.hpp"
+#include "avaverse/skinning.hpp"
 
 #include <filesystem>
 #include <stdexcept>
 
 #include "Eigen/Geometry"
-#include "common/config.hpp"
-#include "common/type.hpp"
+#include "avaverse/config.hpp"
+#include "avaverse/type.hpp"
 #include "igl/lbs_matrix.h"
 #include "igl/png/readPNG.h"
 #include "igl/readDMAT.h"

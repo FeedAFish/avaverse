@@ -4,8 +4,8 @@
 #include <string>
 
 #include "Eigen/Core"
-#include "common/config.hpp"
-#include "common/type.hpp"
+#include "avaverse/config.hpp"
+#include "avaverse/type.hpp"
 #include "igl/opengl/glfw/Viewer.h"
 
 namespace avaverse {
