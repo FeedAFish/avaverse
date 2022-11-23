@@ -4,6 +4,7 @@
 
 #include "Eigen/Geometry"
 #include "cxxopts.hpp"
+#include "igl/deform_skeleton.h"
 #include "igl/directed_edge_parents.h"
 #include "igl/lbs_matrix.h"
 #include "igl/opengl/glfw/Viewer.h"
@@ -17,28 +18,45 @@
 using ColorChannel =
     Eigen::Matrix<unsigned char, Eigen::Dynamic, Eigen::Dynamic>;
 
-void compute_angle_of_skeleton(const Eigen::MatrixXd& skeleton,
-                               Eigen::MatrixXd& angles) {
-  angles = skeleton;
-  angles = angles.rowwise().normalized().array().acos().matrix();
+void compute_skeleton_unit_vector(const Eigen::MatrixXd& C,
+                                  const Eigen::MatrixXi& BE,
+                                  Eigen::MatrixXd& VU) {
+  VU.resize(BE.rows(), 3);
+  for (int i = 0; i < BE.rows(); ++i) {
+    VU.row(i) = (C.row(BE(i, 0)) - C.row(BE(i, 1))).normalized();
+  }
 }
 
-void compute_transformation_matrix(const Eigen::MatrixXd& skeleton,
-                                   const Eigen::MatrixXd& deform,
+void compute_transformation_matrix(const Eigen::MatrixXd& C,
+                                   const Eigen::MatrixXi& BE,
+                                   const Eigen::MatrixXd& CD,
+                                   const Eigen::MatrixXi& BED,
                                    Eigen::MatrixXd& T) {
-  Eigen::MatrixXd angles, anglesD;
-  compute_angle_of_skeleton(skeleton, angles);
-  compute_angle_of_skeleton(deform, anglesD);
-  Eigen::MatrixXd rotate_angles = (anglesD - angles) * 180 / std::numbers::pi;
+  Eigen::MatrixXd VU, VUD;
+  compute_skeleton_unit_vector(C, BE, VU);
+  compute_skeleton_unit_vector(CD, BED, VUD);
 
-  int dim = rotate_angles.cols();
-  T.resize((dim + 1) * rotate_angles.rows(), dim);
-  for (int i = 0; i < rotate_angles.rows(); ++i) {
-    Eigen::EulerAnglesXYZd euler(rotate_angles(i, 0), rotate_angles(i, 1),
-                                 rotate_angles(i, 2));
-    Eigen::Affine3d a = Eigen::Affine3d::Identity();
-    T.block(i * (dim + 1), 0, dim + 1, dim) =
-        a.matrix().transpose().block(0, 0, dim + 1, dim);
+  int dim = C.cols();
+  T.resize(BE.rows() * (dim + 1), dim);
+  T.setZero();
+  for (int i = 0; i < BE.rows(); ++i) {
+    Eigen::Vector3d A = VU.row(i);
+    Eigen::Vector3d B = VUD.row(i);
+    Eigen::MatrixXd axis = A.cross(B);
+
+    const float cosA = A.dot(B);
+    const float k = 1.0f / (1.0f + cosA);
+
+    Eigen::Matrix3d R;
+    R << (axis(0) * axis(0) * k) + cosA, (axis(1) * axis(0) * k) - axis(2),
+        (axis(2) * axis(0) * k) + axis(1), (axis(0) * axis(1) * k) + axis(2),
+        (axis(1) * axis(1) * k) + cosA, (axis(2) * axis(1) * k) - axis(0),
+        (axis(0) * axis(2) * k) - axis(1), (axis(1) * axis(2) * k) + axis(0),
+        (axis(2) * axis(2) * k) + cosA;
+
+    T.block(i * (dim + 1), 0, dim, dim) = R.transpose();
+    T.row((i + 1) * (dim + 1) - 1) =
+        CD.row(BED(i, 0)) - C.row(BE(i, 0)) * R.transpose();
   }
 }
 
@@ -90,7 +108,7 @@ int main(int argc, char* argv[]) {
   igl::lbs_matrix(V, W, M);
 
   Eigen::MatrixXd T;
-  compute_transformation_matrix(C, CD, T);
+  compute_transformation_matrix(C, BE, CD, BED, T);
   Eigen::MatrixXd U = M * T;
 
   igl::opengl::glfw::Viewer viewer;
@@ -108,8 +126,12 @@ int main(int argc, char* argv[]) {
   viewer.data().compute_normals();
 
   if (!args.count("output")) {
+    Eigen::MatrixXd CT;
+    Eigen::MatrixXi BET;
+    igl::deform_skeleton(C, BE, T, CT, BET);
+
     const Eigen::RowVector3d edge_color(70. / 255., 252. / 255., 167. / 255.);
-    viewer.data().set_edges(C, BE, edge_color);
+    viewer.data().set_edges(CT, BET, edge_color);
     viewer.launch();
   } else {
     int width = 1034;
