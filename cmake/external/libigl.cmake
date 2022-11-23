@@ -2,7 +2,7 @@ if(TARGET igl::core)
   return()
 endif()
 
-set(LIBIGL_GIT_TAG v2.4.0)
+set(LIBIGL_GIT_TAG 87a550af22fc4af210af40f1d61d81594bbaf546)
 include(FetchContent)
 FetchContent_Declare(
   libigl
