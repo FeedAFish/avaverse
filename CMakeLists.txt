@@ -65,5 +65,8 @@ igl_include(copyleft/tetgen)
 # Cxxopts
 include(external/cxxopts)
 
+# Build libraries
+add_subdirectory(avaverse)
+
 # Build tools
 add_subdirectory(tools)
