@@ -52,6 +52,9 @@ class Skinning {
   void show_skeleton(int r, int g, int b);
   void show_skeleton(const Eigen::RowVector3d& color);
 
+  void draw_buffer(ColorChannel& R, ColorChannel& G, ColorChannel& B,
+                   ColorChannel& A);
+
   const Eigen::MatrixXd V;
   const Eigen::MatrixXi F;
   const Eigen::MatrixXd UV;

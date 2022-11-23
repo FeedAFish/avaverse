@@ -148,6 +148,11 @@ void Skinning::show_skeleton(const Eigen::RowVector3d& color) {
   add_edges(CT, BET, color);
 }
 
+void Skinning::draw_buffer(ColorChannel& R, ColorChannel& G, ColorChannel& B,
+                           ColorChannel& A) {
+  viewer_.core().draw_buffer(viewer_.data(), true, R, G, B, A);
+}
+
 void Skinning::check_skeleton_structure(const Eigen::MatrixXd& C,
                                         const Eigen::MatrixXi& BE) {
   if ((BE.array() != Skinning::BE.array()).any() || C.rows() != kNumPose ||
