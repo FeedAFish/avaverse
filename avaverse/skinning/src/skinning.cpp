@@ -153,6 +153,10 @@ void Skinning::draw_buffer(ColorChannel& R, ColorChannel& G, ColorChannel& B,
   viewer_.core().draw_buffer(viewer_.data(), true, R, G, B, A);
 }
 
+void Skinning::draw_image(EigenImage& I) {
+  viewer_.core().draw_buffer(viewer_.data(), true, I);
+}
+
 void Skinning::check_skeleton_structure(const Eigen::MatrixXd& C,
                                         const Eigen::MatrixXi& BE) {
   if ((BE.array() != Skinning::BE.array()).any() || C.rows() != kNumPose ||

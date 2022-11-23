@@ -54,6 +54,7 @@ class Skinning {
 
   void draw_buffer(ColorChannel& R, ColorChannel& G, ColorChannel& B,
                    ColorChannel& A);
+  void draw_image(EigenImage& I);
 
   const Eigen::MatrixXd V;
   const Eigen::MatrixXi F;
