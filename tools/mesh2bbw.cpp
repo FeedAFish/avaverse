@@ -25,7 +25,8 @@
 namespace fs = std::filesystem;
 
 bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
-                double thresh, Eigen::MatrixXd& CV, Eigen::MatrixXi& CF) {
+                double thresh, bool run_tetrahedralize, Eigen::MatrixXd& CV,
+                Eigen::MatrixXi& CF) {
   {
     Eigen::MatrixXi _1;
     Eigen::VectorXi _2;
@@ -41,6 +42,7 @@ bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
     Eigen::MatrixXi old_CF = CF;
     igl::remove_unreferenced(old_CV, old_CF, CV, CF, IM);
   }
+  if (!run_tetrahedralize) return true;
 
   Eigen::MatrixXd TV;
   Eigen::MatrixXi TT;
@@ -114,6 +116,7 @@ int main(int argc, char* argv[]) {
                 cxxopts::value<fs::path>());
   options_adder("t,thresh", "Thresh for clean_mesh",
                 cxxopts::value<double>()->default_value("0.5"));
+  options_adder("f,full", "Run full tetrahedralize on clean_mesh");
   options_adder("b,sample_per_bone", "Sample per bone for compute_tet_mesh",
                 cxxopts::value<int>()->default_value("10"));
   options_adder("i,max_iter", "Max iteration for compute_bbw",
@@ -136,7 +139,8 @@ int main(int argc, char* argv[]) {
 
   Eigen::MatrixXd CV;
   Eigen::MatrixXi CF;
-  if (!clean_mesh(V, F, args["thresh"].as<double>(), CV, CF)) {
+  if (!clean_mesh(V, F, args["thresh"].as<double>(), args.count("full"), CV,
+                  CF)) {
     return 1;
   };
 
