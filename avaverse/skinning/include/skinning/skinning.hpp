@@ -4,12 +4,16 @@
 #include <string>
 
 #include "Eigen/Core"
+#include "common/config.hpp"
 #include "common/type.hpp"
 #include "igl/opengl/glfw/Viewer.h"
 
 namespace avaverse {
 
 namespace fs = std::filesystem;
+
+using TransformationMatrix =
+    Eigen::Matrix<double, 14 /* BE.rows() */ * (kDim + 1), kDim>;
 
 class Skinning {
  public:
@@ -37,6 +41,9 @@ class Skinning {
 
   void launch(bool with_gui, int width = 0, int height = 0);
 
+  void deform(const fs::path& deform_skeleton_path);
+  void deform(const Skeleton& CD);
+
   const Eigen::MatrixXd V;
   const Eigen::MatrixXi F;
   const Eigen::MatrixXd UV;
@@ -56,6 +63,8 @@ class Skinning {
                                        const Eigen::MatrixXi& BE);
 
   igl::opengl::glfw::Viewer viewer_;
+
+  TransformationMatrix T_ = TransformationMatrix::Zero();
 };
 
 };  // namespace avaverse

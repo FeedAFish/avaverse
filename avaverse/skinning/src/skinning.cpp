@@ -76,6 +76,45 @@ void Skinning::launch(bool with_gui, int width, int height) {
   }
 }
 
+void Skinning::deform(const fs::path& deform_skeleton_path) {
+  Eigen::MatrixXd _C;
+  Eigen::MatrixXi _BE;
+  igl::readTGF(deform_skeleton_path, _C, _BE);
+  check_skeleton_structure(_C, _BE);
+  deform(_C);
+}
+
+void Skinning::deform(const Skeleton& CD) {
+  for (int i = 0; i < BE.rows(); ++i) {
+    const auto& A1 = C.row(BE(i, 0));
+    const auto& B1 = C.row(BE(i, 1));
+    const auto& A2 = CD.row(BE(i, 0));
+    const auto& B2 = CD.row(BE(i, 1));
+    const auto& axis = ((A1 - B1).normalized()).cross((A2 - B2).normalized());
+    const auto& cos = ((A1 - B1).normalized()).dot((A2 - B2).normalized());
+    const auto& k = 1 / (1 + cos);
+
+    // https://gist.github.com/kevinmoran/b45980723e53edeb8a5a43c49f134724
+
+    T_(i * (kDim + 1), 0) = (axis(0) * axis(0) * k) + cos;
+    T_(i * (kDim + 1), 1) = (axis(0) * axis(1) * k) + axis(2);
+    T_(i * (kDim + 1), 2) = (axis(0) * axis(2) * k) - axis(1);
+
+    T_(i * (kDim + 1) + 1, 0) = (axis(1) * axis(0) * k) - axis(2);
+    T_(i * (kDim + 1) + 1, 1) = (axis(1) * axis(1) * k) + cos;
+    T_(i * (kDim + 1) + 1, 2) = (axis(1) * axis(2) * k) + axis(0);
+
+    T_(i * (kDim + 1) + 2, 0) = (axis(2) * axis(0) * k) + axis(1);
+    T_(i * (kDim + 1) + 2, 1) = (axis(2) * axis(1) * k) - axis(0);
+    T_(i * (kDim + 1) + 2, 2) = (axis(2) * axis(2) * k) + cos;
+
+    T_.row((i + 1) * (kDim + 1) - 1) =
+        A2 - A1 * T_.block(i * (kDim + 1), 0, kDim, kDim);
+  }
+  Eigen::MatrixXd U = M * T_;
+  viewer_.data().set_vertices(U);
+}
+
 void Skinning::check_skeleton_structure(const Eigen::MatrixXd& C,
                                         const Eigen::MatrixXi& BE) {
   if ((BE.array() != Skinning::BE.array()).any() || C.rows() != kNumPose ||
