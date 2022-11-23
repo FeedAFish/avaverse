@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <stdexcept>
 
+#include "Eigen/Geometry"
 #include "common/type.hpp"
 #include "igl/lbs_matrix.h"
 #include "igl/png/readPNG.h"
@@ -16,7 +17,18 @@ Skinning::Skinning(Eigen::MatrixXd&& V, Eigen::MatrixXi&& F,
                    Eigen::MatrixXd&& UV, ColorChannel&& R, ColorChannel&& G,
                    ColorChannel&& B, ColorChannel&& A, Skeleton&& C,
                    Eigen::MatrixXd&& M)
-    : V(V), F(F), UV(UV), R(R), G(G), B(B), A(A), C(C), M(M) {}
+    : V(V), F(F), UV(UV), R(R), G(G), B(B), A(A), C(C), M(M) {
+  viewer_.data().set_mesh(V, F);
+  viewer_.data().set_uv(UV);
+  viewer_.data().show_texture = true;
+  viewer_.data().show_lines = false;
+  viewer_.data().set_texture(R, G, B, A);
+  // rotate z 90deg and then rotate y 180deg
+  viewer_.core().trackball_angle =
+      Eigen::Quaternionf(-sqrt(0.5), sqrt(0.5), 0, 0);
+}
+
+Skinning::~Skinning() { viewer_.launch_shut(); }
 
 Skinning Skinning::from_igl_path(const fs::path& mesh_path,
                                  const fs::path& texture_path,
@@ -53,6 +65,14 @@ Skinning Skinning::from_igl_path(const fs::path& mesh_path,
   return Skinning(std::move(V), std::move(F), std::move(UV), std::move(R),
                   std::move(G), std::move(B), std::move(A), std::move(C),
                   std::move(M));
+}
+
+void Skinning::launch(bool with_gui, int width, int height) {
+  if (with_gui) {
+    viewer_.launch(true, false, "skinning viewer", width, height);
+  } else {
+    viewer_.launch_init(false, false, "", width, height, true);
+  }
 }
 
 void Skinning::check_skeleton_structure(const Eigen::MatrixXd& C,

@@ -5,6 +5,7 @@
 
 #include "Eigen/Core"
 #include "common/type.hpp"
+#include "igl/opengl/glfw/Viewer.h"
 
 namespace avaverse {
 
@@ -16,6 +17,8 @@ class Skinning {
                                 const fs::path& texture_path,
                                 const fs::path& skeleton_path,
                                 const fs::path& weight_path);
+
+  ~Skinning();
 
   inline const static auto BE = Eigen::Matrix<int, 14, 2>({{0, 1},
                                                            {1, 2},
@@ -31,6 +34,8 @@ class Skinning {
                                                            {10, 11},
                                                            {12, 13},
                                                            {13, 14}});
+
+  void launch(bool with_gui, int width = 0, int height = 0);
 
   const Eigen::MatrixXd V;
   const Eigen::MatrixXi F;
@@ -49,6 +54,8 @@ class Skinning {
 
   static void check_skeleton_structure(const Eigen::MatrixXd& C,
                                        const Eigen::MatrixXi& BE);
+
+  igl::opengl::glfw::Viewer viewer_;
 };
 
 };  // namespace avaverse
