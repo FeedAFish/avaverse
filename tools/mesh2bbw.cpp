@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <string>
 
@@ -162,7 +163,11 @@ int main(int argc, char* argv[]) {
   };
 
   auto output = args["output"].as<fs::path>();
+
   igl::writeMESH(output.replace_extension("mesh"), TV, TT, TF);
+  std::ofstream mesh(output, std::ios_base::app);
+  mesh << "\n End\n";
+
   igl::writeDMAT(output.replace_extension("dmat"), W);
   return 0;
 }
