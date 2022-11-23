@@ -4,6 +4,7 @@
 #include <stdexcept>
 
 #include "Eigen/Geometry"
+#include "common/config.hpp"
 #include "common/type.hpp"
 #include "igl/lbs_matrix.h"
 #include "igl/png/readPNG.h"
@@ -78,7 +79,7 @@ void Skinning::launch(bool with_gui, int width, int height) {
 void Skinning::check_skeleton_structure(const Eigen::MatrixXd& C,
                                         const Eigen::MatrixXi& BE) {
   if ((BE.array() != Skinning::BE.array()).any() || C.rows() != kNumPose ||
-      C.cols() != 3) {
+      C.cols() != kDim) {
     throw std::invalid_argument("wrong skeleton structure");
   }
 }
