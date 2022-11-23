@@ -28,11 +28,10 @@ namespace fs = std::filesystem;
 
 bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
                 double thresh, bool run_tetrahedralize, Eigen::MatrixXd& CV,
-                Eigen::MatrixXi& CF) {
+                Eigen::MatrixXi& CF, Eigen::VectorXi& IM) {
   {
     Eigen::MatrixXi _1;
     Eigen::VectorXi _2;
-    Eigen::VectorXi IM;
 
     igl::copyleft::cgal::remesh_self_intersections(V, F, {}, CV, CF, _1, _2,
                                                    IM);
@@ -91,7 +90,8 @@ bool compute_tet_mesh(const Eigen::MatrixXd& CV, const Eigen::MatrixXi& CF,
 
 bool compute_bbw(const Eigen::MatrixXd& V, const Eigen::MatrixXd& TV,
                  const Eigen::MatrixXi& TT, const Eigen::MatrixXd& C,
-                 const Eigen::MatrixXi& BE, int max_iter, Eigen::MatrixXd& W) {
+                 const Eigen::MatrixXi& BE, const Eigen::VectorXi& IM,
+                 int max_iter, Eigen::MatrixXd& W) {
   Eigen::VectorXi b;
   Eigen::MatrixXd bc;
   if (!igl::boundary_conditions(TV, TT, C, {}, BE, {}, b, bc)) {
@@ -101,12 +101,17 @@ bool compute_bbw(const Eigen::MatrixXd& V, const Eigen::MatrixXd& TV,
   igl::BBWData bbw_data;
   bbw_data.verbosity = 2;
   bbw_data.active_set_params.max_iter = max_iter;
-  if (!igl::bbw(TV, TT, b, bc, bbw_data, W)) {
+  Eigen::MatrixXd TW;
+  if (!igl::bbw(TV, TT, b, bc, bbw_data, TW)) {
     return false;
   }
 
-  igl::normalize_row_sums(W, W);
-  W.conservativeResize(V.rows(), W.cols());
+  igl::normalize_row_sums(TW, TW);
+
+  W.resize(V.rows(), TW.cols());
+  for (int i = 0; i < V.rows(); i++) {
+    W.row(i) = TW.row(IM(i));
+  }
   return true;
 }
 
@@ -144,8 +149,9 @@ int main(int argc, char* argv[]) {
 
   Eigen::MatrixXd CV;
   Eigen::MatrixXi CF;
-  if (!clean_mesh(V, F, args["thresh"].as<double>(), args.count("full"), CV,
-                  CF)) {
+  Eigen::VectorXi IM;
+  if (!clean_mesh(V, F, args["thresh"].as<double>(), args.count("full"), CV, CF,
+                  IM)) {
     return 1;
   };
 
@@ -158,7 +164,7 @@ int main(int argc, char* argv[]) {
   };
 
   Eigen::MatrixXd W;
-  if (!compute_bbw(V, TV, TT, C, BE, args["max_iter"].as<int>(), W)) {
+  if (!compute_bbw(V, TV, TT, C, BE, IM, args["max_iter"].as<int>(), W)) {
     return 1;
   };
 
