@@ -185,16 +185,17 @@ int main(int argc, char* argv[]) {
     return 1;
   };
 
-  Eigen::MatrixXd W;
-  if (!compute_bbw(V, TV, TT, C, BE, IM, args["max_iter"].as<int>(), W)) {
-    return 1;
-  };
-
   auto output = args["output"].as<fs::path>();
 
   igl::writeMESH(output.replace_extension("mesh"), TV, TT, TF);
   std::ofstream mesh(output, std::ios_base::app);
   mesh << "\n End\n";
+  mesh.close();
+
+  Eigen::MatrixXd W;
+  if (!compute_bbw(V, TV, TT, C, BE, IM, args["max_iter"].as<int>(), W)) {
+    return 1;
+  };
 
   igl::writeDMAT(output.replace_extension("dmat"), W);
   return 0;
