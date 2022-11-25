@@ -63,6 +63,7 @@ igl_include(png)
 igl_include(glfw)
 igl_include(copyleft/cgal)
 igl_include(copyleft/tetgen)
+target_compile_definitions(igl_glfw INTERFACE IGL_VIEWER_VIEWER_QUIET)
 
 # Cxxopts
 include(external/cxxopts)
