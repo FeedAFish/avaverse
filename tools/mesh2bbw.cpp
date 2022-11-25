@@ -82,10 +82,28 @@ bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 bool compute_tet_mesh(const Eigen::MatrixXd& CV, const Eigen::MatrixXi& CF,
                       const Eigen::MatrixXd& C, const Eigen::MatrixXi& BE,
                       int samples_per_bone, const std::string& quality,
-                      Eigen::MatrixXd& TV, Eigen::MatrixXi& TT,
+                      double thresh, Eigen::MatrixXd& TV, Eigen::MatrixXi& TT,
                       Eigen::MatrixXi& TF) {
-  return igl::copyleft::tetgen::mesh_with_skeleton(
-      CV, CF, C, {}, BE, {}, samples_per_bone, quality, TV, TT, TF);
+  if (!igl::copyleft::tetgen::mesh_with_skeleton(
+          CV, CF, C, {}, BE, {}, samples_per_bone, quality, TV, TT, TF)) {
+    return false;
+  }
+
+  {
+    Eigen::MatrixXi old_TT = TT;
+    Eigen::VectorXd vol;
+    igl::volume(TV, TT, vol);
+    const int count = (vol.array() > thresh).cast<int>().sum();
+    TT.resize(count, old_TT.cols());
+    int c = 0;
+    for (int t = 0; t < old_TT.rows(); t++) {
+      if (vol(t) > thresh) {
+        TT.row(c++) = old_TT.row(t);
+      }
+    }
+  }
+
+  return true;
 }
 
 bool compute_bbw(const Eigen::MatrixXd& V, const Eigen::MatrixXd& TV,
@@ -129,6 +147,9 @@ int main(int argc, char* argv[]) {
                 cxxopts::value<std::string>()->default_value(""));
   options_adder("b,sample_per_bone", "Sample per bone for compute_tet_mesh",
                 cxxopts::value<int>()->default_value("10"));
+  options_adder("v,volume",
+                "Thresh to remove small volumes in compute_tet_mesh",
+                cxxopts::value<double>()->default_value("1e-17"));
   options_adder("i,max_iter", "Max iteration for compute_bbw",
                 cxxopts::value<int>()->default_value("1000"));
   options_adder("o,output", "Output path (.dmat)", cxxopts::value<fs::path>());
@@ -159,7 +180,8 @@ int main(int argc, char* argv[]) {
   Eigen::MatrixXi TT;
   Eigen::MatrixXi TF;
   if (!compute_tet_mesh(CV, CF, C, BE, args["sample_per_bone"].as<int>(),
-                        args["quality"].as<std::string>(), TV, TT, TF)) {
+                        args["quality"].as<std::string>(),
+                        args["volume"].as<double>(), TV, TT, TF)) {
     return 1;
   };
 
