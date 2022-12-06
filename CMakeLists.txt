@@ -53,7 +53,7 @@ find_package(glfw3 REQUIRED)
 add_library(glfw::glfw ALIAS glfw)
 
 # CGAL
-find_package(CGAL REQUIRED Core)
+find_package(CGAL COMPONENTS Core)
 
 # Libigl
 option(LIBIGL_USE_STATIC_LIBRARY "Use libIGL as static librarie" ON)
@@ -61,8 +61,12 @@ add_compile_definitions(IGL_VIEWER_VIEWER_QUIET)
 include(avaverse/external/libigl)
 igl_include(png)
 igl_include(glfw)
-igl_include(copyleft/cgal)
-igl_include(copyleft/tetgen)
+
+if(CGAL_FOUND)
+  igl_include(copyleft/cgal)
+  igl_include(copyleft/tetgen)
+endif()
+
 target_compile_definitions(igl_glfw INTERFACE IGL_VIEWER_VIEWER_QUIET)
 
 # Cxxopts
