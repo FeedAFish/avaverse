@@ -11,6 +11,7 @@
 #include "igl/boundary_conditions.h"
 #include "igl/boundary_facets.h"
 #include "igl/copyleft/cgal/remesh_self_intersections.h"
+#include "igl/copyleft/tetgen/cdt.h"
 #include "igl/copyleft/tetgen/mesh_with_skeleton.h"
 #include "igl/copyleft/tetgen/tetrahedralize.h"
 #include "igl/normalize_row_sums.h"
@@ -41,7 +42,10 @@ bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 
     Eigen::MatrixXd old_CV = CV;
     Eigen::MatrixXi old_CF = CF;
-    igl::remove_unreferenced(old_CV, old_CF, CV, CF, IM);
+    Eigen::VectorXi new_IM;
+    igl::remove_unreferenced(old_CV, old_CF, CV, CF, new_IM);
+    std::for_each(IM.data(), IM.data() + IM.size(),
+                  [&new_IM](int& i) { i = i >= 0 ? new_IM(i) : i; });
   }
   if (!run_tetrahedralize) return true;
 
@@ -50,7 +54,12 @@ bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
 
   {
     Eigen::MatrixXi _1;
-    if (igl::copyleft::tetgen::tetrahedralize(CV, CF, "cYpC", TV, TT, _1)) {
+
+    igl::copyleft::tetgen::CDTParam params;
+    params.flags = "CYT1e-16";
+    params.use_bounding_box = false;
+
+    if (igl::copyleft::tetgen::cdt(CV, CF, params, TV, TT, _1)) {
       return false;
     }
   }
@@ -75,6 +84,21 @@ bool clean_mesh(const Eigen::MatrixXd& V, const Eigen::MatrixXi& F,
       return false;
     }
     igl::boundary_facets(CT, CF);
+
+    Eigen::MatrixXi FF = F;
+    std::for_each(FF.data(), FF.data() + FF.size(),
+                  [&IM](int& i) { i = IM(i); });
+
+    int ncf = CF.rows();
+    Eigen::MatrixXi ref(ncf + FF.rows(), CF.cols());
+    ref << CF, FF;
+    Eigen::VectorXi n_IM;
+    igl::remove_unreferenced(TV, ref, CV, CF, n_IM);
+
+    CF.conservativeResize(ncf, CF.cols());
+
+    std::for_each(IM.data(), IM.data() + IM.size(),
+                  [&n_IM](int& a) { a = a >= 0 ? n_IM(a) : a; });
   }
   return true;
 }
