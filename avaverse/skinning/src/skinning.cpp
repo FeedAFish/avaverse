@@ -72,7 +72,8 @@ Skinning Skinning::from_igl_path(const fs::path& mesh_path,
 
 void Skinning::launch(bool with_gui, int width, int height) {
   if (with_gui) {
-    viewer_.launch(true, false, "skinning viewer", width, height);
+    viewer_.launch_init(true, false, "skinning viewer", width, height);
+    viewer_.launch_rendering(true);
   } else {
     viewer_.launch_init(false, false, "", width, height, true);
   }
