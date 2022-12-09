@@ -12,8 +12,7 @@ namespace avaverse {
 
 namespace fs = std::filesystem;
 
-using TransformationMatrix =
-    Eigen::Matrix<double, 14 /* BE.rows() */ * (kDim + 1), kDim>;
+using TransformationMatrix = Eigen::Matrix<double, kNumBone*(kDim + 1), kDim>;
 
 class Skinning {
  public:
@@ -24,20 +23,20 @@ class Skinning {
 
   ~Skinning();
 
-  inline const static auto BE = Eigen::Matrix<int, 14, 2>({{0, 1},
-                                                           {1, 2},
-                                                           {1, 5},
-                                                           {1, 8},
-                                                           {2, 3},
-                                                           {3, 4},
-                                                           {5, 6},
-                                                           {6, 7},
-                                                           {8, 9},
-                                                           {8, 12},
-                                                           {9, 10},
-                                                           {10, 11},
-                                                           {12, 13},
-                                                           {13, 14}});
+  inline const static auto BE = Eigen::Matrix<int, kNumBone, 2>({{0, 1},
+                                                                 {1, 2},
+                                                                 {1, 5},
+                                                                 {1, 8},
+                                                                 {2, 3},
+                                                                 {3, 4},
+                                                                 {5, 6},
+                                                                 {6, 7},
+                                                                 {8, 9},
+                                                                 {8, 12},
+                                                                 {9, 10},
+                                                                 {10, 11},
+                                                                 {12, 13},
+                                                                 {13, 14}});
 
   void launch(bool with_gui, int width = 0, int height = 0);
 
