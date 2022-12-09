@@ -38,6 +38,9 @@ class Skinning {
                                                                  {12, 13},
                                                                  {13, 14}});
 
+  inline const static auto P = Eigen::Vector<int, kNumBone>(
+      {-1, 0, 0, 0, 1, 4, 2, 6, 3, 3, 8, 10, 9, 12});
+
   void launch(bool with_gui, int width = 0, int height = 0);
 
   void deform(const fs::path& deform_skeleton_path);
