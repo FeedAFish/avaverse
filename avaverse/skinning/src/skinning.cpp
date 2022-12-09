@@ -110,8 +110,15 @@ void Skinning::deform(const Skeleton& CD) {
     T_(i * (kDim + 1) + 2, 1) = (axis(2) * axis(1) * k) - axis(0);
     T_(i * (kDim + 1) + 2, 2) = (axis(2) * axis(2) * k) + cos;
 
-    T_.row((i + 1) * (kDim + 1) - 1) =
-        A2 - A1 * T_.block(i * (kDim + 1), 0, kDim, kDim);
+    if (P(i) == -1) {
+      T_.row((i + 1) * (kDim + 1) - 1) =
+          A2 - A1 * T_.block(i * (kDim + 1), 0, kDim, kDim);
+    } else {
+      T_.row((i + 1) * (kDim + 1) - 1) =
+          C.row(BE(P(i), 1)) * T_.block(P(i) * (kDim + 1), 0, kDim, kDim) +
+          T_.row((P(i) + 1) * (kDim + 1) - 1) -
+          A1 * T_.block(i * (kDim + 1), 0, kDim, kDim);
+    }
   }
   Eigen::MatrixXd U = M * T_;
   viewer_.data().set_vertices(U);
