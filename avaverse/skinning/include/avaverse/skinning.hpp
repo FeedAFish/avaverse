@@ -24,20 +24,22 @@ class Skinning {
 
   ~Skinning();
 
-  inline const static auto BE = Eigen::Matrix<int, kNumBone, 2>({{0, 1},
-                                                                 {1, 2},
-                                                                 {1, 5},
-                                                                 {1, 8},
-                                                                 {2, 3},
-                                                                 {3, 4},
+  inline const static auto BE = Eigen::Matrix<int, kNumBone, 2>({{0, 4},
+                                                                 {4, 5},
                                                                  {5, 6},
-                                                                 {6, 7},
+                                                                 {0, 1},
+                                                                 {1, 2},
+                                                                 {2, 3},
+                                                                 {0, 7},
+                                                                 {7, 8},
                                                                  {8, 9},
-                                                                 {8, 12},
                                                                  {9, 10},
-                                                                 {10, 11},
+                                                                 {8, 11},
+                                                                 {11, 12},
                                                                  {12, 13},
-                                                                 {13, 14}});
+                                                                 {8, 14},
+                                                                 {14, 15},
+                                                                 {15, 16}});
 
   inline const static Eigen::Vector<int, kNumBone> P =
       ([](const Eigen::MatrixXi& _BE) {

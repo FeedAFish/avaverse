@@ -4,6 +4,28 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
+SKELETON_BONES = np.array(
+    [
+        [0, 4],
+        [4, 5],
+        [5, 6],
+        [0, 1],
+        [1, 2],
+        [2, 3],
+        [0, 7],
+        [7, 8],
+        [8, 9],
+        [9, 10],
+        [8, 11],
+        [11, 12],
+        [12, 13],
+        [8, 14],
+        [14, 15],
+        [15, 16],
+    ],
+    dtype=int,
+)
+
 
 def npy_2_tgf(input, output):
     position = np.load(input)[..., 0]
@@ -11,28 +33,7 @@ def npy_2_tgf(input, output):
     position_df.index += 1
     content = position_df.to_string(header=False)
     content += "\n#\n"
-    edge_df = pd.DataFrame(
-        np.array(
-            [
-                [0, 1],
-                [1, 2],
-                [1, 5],
-                [1, 8],
-                [2, 3],
-                [3, 4],
-                [5, 6],
-                [6, 7],
-                [8, 9],
-                [8, 12],
-                [9, 10],
-                [10, 11],
-                [12, 13],
-                [13, 14],
-            ],
-            dtype=int,
-        )
-        + 1
-    )
+    edge_df = pd.DataFrame(SKELETON_BONES + 1)
     content += edge_df.to_string(index=False, header=False)
     content += "\n#\n"
     with open(output, "w") as f:

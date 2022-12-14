@@ -8,21 +8,23 @@ from mathutils import Vector
 RESOLUTION = (512, 512)
 
 BASE_JOINT_NAMES = [
-    "Head",
-    "Neck",
-    "RightArm",
-    "RightForeArm",
-    "RightHand",
-    "LeftArm",
-    "LeftForeArm",
-    "LeftHand",
-    "Hips",
-    "RightUpLeg",
-    "RightLeg",
-    "RightFoot",
-    "LeftUpLeg",
-    "LeftLeg",
-    "LeftFoot",
+    "Hips",  # root
+    "RightUpLeg",  # right_hip
+    "RightLeg",  # right_knee
+    "RightFoot",  # right_foot
+    "LeftUpLeg",  # left_hip
+    "LeftLeg",  # left_knee
+    "LeftFoot",  # left_foot
+    "Spine1",  # spine
+    "Neck",  # thorax
+    "Neck1",  # neck_base
+    "Head",  # head
+    "LeftArm",  # left_shoulder
+    "LeftForeArm",  # left_elbow
+    "LeftHand",  # left_wrist
+    "RightArm",  # right_shoulder
+    "RightForeArm",  # right_elbow
+    "RightHand",  # right_wrist
 ]
 MIXAMO_JOINT_NAMES = ["mixamorig:" + x for x in BASE_JOINT_NAMES]
 
