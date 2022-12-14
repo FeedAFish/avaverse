@@ -6,6 +6,7 @@
 #include "Eigen/Core"
 #include "avaverse/config.hpp"
 #include "avaverse/type.hpp"
+#include "igl/directed_edge_parents.h"
 #include "igl/opengl/glfw/Viewer.h"
 
 namespace avaverse {
@@ -38,8 +39,12 @@ class Skinning {
                                                                  {12, 13},
                                                                  {13, 14}});
 
-  inline const static auto P = Eigen::Vector<int, kNumBone>(
-      {-1, 0, 0, 0, 1, 4, 2, 6, 3, 3, 8, 10, 9, 12});
+  inline const static Eigen::Vector<int, kNumBone> P =
+      ([](const Eigen::MatrixXi& _BE) {
+        Eigen::VectorXi _P;
+        igl::directed_edge_parents(_BE, _P);
+        return _P;
+      })(BE);
 
   void launch(bool with_gui, int width = 0, int height = 0);
 
